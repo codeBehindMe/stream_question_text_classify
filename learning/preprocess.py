@@ -64,4 +64,4 @@ if __name__ == '__main__':
     _cleanLabel = _cleanLabel.loc[_cleanLabel['code'] != 'nan']
 
     # Let's write out a cleaner output file for data the learning process.
-    _cleanLabel.to_csv("../learning/CLEANED_LABELED.csv", encoding='utf-8', index=False)
+    _cleanLabel.to_csv("../learning/PROCESSED_LABELED.csv", encoding='utf-8', index=False)
