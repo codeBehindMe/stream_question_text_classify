@@ -5,6 +5,10 @@ from nltk.util import ngrams
 from nltk import FreqDist
 import matplotlib.pyplot as plt
 from nltk.tokenize import MWETokenizer
+from sklearn.feature_extraction.text import CountVectorizer
+
+from sklearn.linear_model import SGDClassifier
+import numpy as np
 
 
 def getTokensFromString(string, regexPattern=r'\W+'):
@@ -89,3 +93,14 @@ if __name__ == '__main__':
 
     # flatten
     _mweWordBagFlat = [word for wordList in list(_mweWordBag) for word in wordList]
+
+    # Create a sparse matrix
+    _cVec = CountVectorizer(analyzer='word')
+    _cVec.fit(_data['question_text'].tolist())
+
+    _train = _cVec.transform(_data['question_text'].tolist())
+
+    # region model
+    clf = SGDClassifier()
+    trained = clf.fit(_train, _data['code'].tolist())
+    # endregion
