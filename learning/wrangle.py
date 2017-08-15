@@ -5,10 +5,7 @@ from nltk.util import ngrams
 from nltk import FreqDist
 import matplotlib.pyplot as plt
 from nltk.tokenize import MWETokenizer
-from sklearn.feature_extraction.text import CountVectorizer
-
-from sklearn.linear_model import SGDClassifier
-import numpy as np
+from nltk.stem import LancasterStemmer
 
 
 def getTokensFromString(string, regexPattern=r'\W+'):
@@ -49,6 +46,34 @@ def getMWETokens(string, tokenizer):
     :return: list of tokenized strings.
     """
     return tokenizer.tokenize(string.split())
+
+
+def removeNonAlphabetic(stringSentence):
+    # type: (str) -> str
+    """
+    This method takes a string sentance and removes any characters that are non alphabetic.
+    :param stringSentence: Sentence to be processed.
+    :return:
+    """
+    _tokens = stringSentence.split(' ')
+    _realWords = [word for word in _tokens if word.isalpha()]
+
+    return ' '.join(_realWords)
+
+
+def stemWords(stringSentence, stemmer):
+    # type: (str,object) -> str
+    """
+    Stems words using a stemmer.
+    :param stringSentence: Sentence to be processed.
+    :return:
+    """
+
+    _tokens = stringSentence.split(' ')
+
+    _tokens = list(map(lambda x: stemmer.stem(x), _tokens))
+
+    return ' '.join(_tokens)
 
 
 if __name__ == '__main__':
@@ -94,13 +119,19 @@ if __name__ == '__main__':
     # flatten
     _mweWordBagFlat = [word for wordList in list(_mweWordBag) for word in wordList]
 
-    # Create a sparse matrix
-    _cVec = CountVectorizer(analyzer='word')
-    _cVec.fit(_data['question_text'].tolist())
+    # Let's have a look at some duplicate entries in questions.
+    r_duplicates = _data.drop_duplicates()
+    print(r_duplicates.shape[0], _data.shape[0])
+    # 288 297
+    # Looks like 9 instances were duplicates.
 
-    _train = _cVec.transform(_data['question_text'].tolist())
+    # Remove the non alpha characters.
+    r_duplicates['question_text'] = r_duplicates['question_text'].apply(lambda x: removeNonAlphabetic(x))
+    # Stem words
+    _stemmer = LancasterStemmer()
+    r_duplicates['question_text'] = r_duplicates['question_text'].apply(lambda x: stemWords(x, _stemmer))
 
-    # region model
-    clf = SGDClassifier()
-    trained = clf.fit(_train, _data['code'].tolist())
-    # endregion
+    r_duplicates = r_duplicates.drop_duplicates()
+    print(r_duplicates.shape[0], _data.shape[0])
+
+    r_duplicates.to_csv("../learning/CLEANED_LABELED.csv",index=False,encoding='utf-8')
