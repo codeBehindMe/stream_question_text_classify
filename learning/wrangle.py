@@ -2,6 +2,9 @@
 import pandas as pd
 from nltk.tokenize import RegexpTokenizer
 from nltk.util import ngrams
+from nltk import FreqDist
+import matplotlib.pyplot as plt
+from nltk.tokenize import MWETokenizer
 
 
 def getTokensFromString(string, regexPattern=r'\W+'):
@@ -17,9 +20,36 @@ def getTokensFromString(string, regexPattern=r'\W+'):
     return _tokenizer.tokenize(string)
 
 
+# MWE tokenizer wrapper for generating a tokenizer with identified ngrams.
+def getMWETokenizer(nGrams):
+    # type: (list) -> MWETokenizer
+    """
+    We need to generate a multi word expression tokenizer using ngrams that have been identified.
+    :param nGrams: List containing nltk.probability.FreqDist objects.
+    :return: Tokenizer object.
+    """
+    _tk = MWETokenizer(separator=' ')
+    for i in nGrams:
+        _tk.add_mwe(i[0])
+
+    return _tk
+
+
+# Wrapper for generating tokens with a tokenizer that has ngrams defined.
+def getMWETokens(string, tokenizer):
+    # type: (str,MWETokenizer) -> list
+    """
+    This wrapper will generate tokens for a given string using the the specified MWETokenizer.
+    :param string: String to be tokenized.
+    :param tokenizer: Tokenizer to be used for tokenization.
+    :return: list of tokenized strings.
+    """
+    return tokenizer.tokenize(string.split())
+
+
 if __name__ == '__main__':
     # read in the cleaned data.
-    _data = pd.read_csv("PROCESSED_LABELED.csv")
+    _data = pd.read_csv("learning/PROCESSED_LABELED.csv")
 
     # The balance of classes are important for a learning algorithm, so let's quickly visualise that.
     _data.groupby(['code']).count().reset_index().plot(kind='bar', x='code')
@@ -42,5 +72,20 @@ if __name__ == '__main__':
     # Remove any numbers that might be present.
     _flatBag = [word for word in _flatBag if not word.isdigit()]
 
+    _unigrams = FreqDist(ngrams(_flatBag, n=1))
+    _unigrams.plot(30)
+
     # Let's generate some bigrams
-    # TODO: Bigrams
+    _bigrams = FreqDist(ngrams(_flatBag, n=2))
+    _bigrams.plot(30)
+    # It's not so much a sharp drop, so maybe stopwords aren't really a problme?
+    # Try trigrams
+    _trigrams = FreqDist(ngrams(_flatBag, n=3))
+    _trigrams.plot(30)
+
+    # Generate tokenizer using bigrams and trigrams top say 10.
+    _mweTokenizer = getMWETokenizer(_bigrams.most_common(10) + _trigrams.most_common(10))
+    _mweWordBag = map(lambda x: getMWETokens(x, _mweTokenizer), _data['question_text'].tolist())
+
+    # flatten
+    _mweWordBagFlat = [word for wordList in list(_mweWordBag) for word in wordList]
