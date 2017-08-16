@@ -2,6 +2,7 @@
 import pickle
 
 from .exceptions import InvalidModelException
+from engine import IClassifier
 import warnings
 
 from sklearn.linear_model import SGDClassifier
@@ -12,8 +13,8 @@ from nltk.stem import LancasterStemmer
 warnings.filterwarnings("ignore")
 
 
-class LearnedModelClassifier:
-    __MODELS = [SGDClassifier()]
+class LearnedModelClassifier(IClassifier):
+    __MODELS = [SGDClassifier]
 
     def __init__(self, vectoriser, model):
         self._vectoriser = vectoriser
@@ -49,6 +50,15 @@ class LearnedModelClassifier:
             "Did not recieve a model that was one of the expected types. Use model_types() to see supported models. Recieved type {0}".format(
                 type(self._model)))
 
+    @classmethod
+    def _process_string(cls, string):
+        """
+        This method takes a string object and processes so it may be passed into the model object to make a prediction.
+        :param string: String to be processed
+        :return: sparse matrix containing the feature vector.
+        """
+        raise NotImplementedError()
+
     def get_supported_models(self):
         # type: () -> list
         """
@@ -56,3 +66,12 @@ class LearnedModelClassifier:
         :return:
         """
         return [type(model) for model in self.__MODELS]
+
+    def predict(self):
+        raise NotImplementedError()
+
+    def probabilities(self):
+        raise NotImplementedError()
+
+    def predict_top(self, n):
+        raise NotImplementedError()

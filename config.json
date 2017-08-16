@@ -1,0 +1,4 @@
+{
+  "vectoriser": "stringVectorizer.pobj",
+  "linearmodel": "LinearModel.pobj"
+}
