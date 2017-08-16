@@ -10,7 +10,7 @@ class FileIOService:
 
 class IClassifier(metaclass=ABCMeta):
     @abstractmethod
-    def predict(self):
+    def predict(self, stringSentence):
         pass
 
     @abstractmethod
@@ -18,5 +18,5 @@ class IClassifier(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def predict_top(self, n):
+    def predict_top(self,stringSentence, n):
         pass

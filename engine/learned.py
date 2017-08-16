@@ -8,7 +8,7 @@ import warnings
 from sklearn.linear_model import SGDClassifier
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk.stem import LancasterStemmer
-import numpy as np
+from scipy.sparse import spmatrix
 
 # Stop packages from raising warnings to the user.
 warnings.filterwarnings("ignore")
@@ -20,6 +20,9 @@ class LearnedModelClassifier(IClassifier):
     def __init__(self, vectoriser, model):
         self._vectoriser = vectoriser
         self._model = model
+
+        self._load_vectoriser()
+        self._load_predictiveModel()
 
     def _load_vectoriser(self):
         # type:() -> None
@@ -42,11 +45,13 @@ class LearnedModelClassifier(IClassifier):
         Flow Control Method
         -------------------
         This method asserts that the loaded model is one that is supported by the LearnedModelClassifier class.
+        Also assigns the multinomial class labels which can be predicted.
         :return: None
         """
 
         for model in self.__MODELS:
-            if isinstance(self.__MODELS, model):
+            if isinstance(self._model, model):
+                self._classLabels = self._model.classes_  # Assign the classes available in the classifier to the labels container.
                 return
 
         raise InvalidModelException(
@@ -85,7 +90,7 @@ class LearnedModelClassifier(IClassifier):
 
     @classmethod
     def _process_sentence(cls, stringSentence, vectoriser):
-        # type: (str,CountVectorizer) -> None
+        # type: (str,CountVectorizer) -> spmatrix
         """
         This method takes a string object and processes so it may be passed into the model object to make a prediction.
         :param stringSentence: String to be processed
@@ -96,9 +101,7 @@ class LearnedModelClassifier(IClassifier):
         _str = cls._strip_remove_non_alpha(stringSentence)
         _str = cls._stem_words_lancaster(_str)
 
-        _feature_vector = vectoriser.transform(_str)
-
-        raise NotImplementedError()
+        return vectoriser.transform([_str])
 
     def get_supported_models(self):
         # type: () -> list
@@ -106,13 +109,34 @@ class LearnedModelClassifier(IClassifier):
         This is an attribute method which the supported model types.
         :return:
         """
-        return [type(model) for model in self.__MODELS]
+        return [model for model in self.__MODELS]
 
-    def predict(self):
-        raise NotImplementedError()
+    def predict(self, stringSentence):
+        # type: (str) -> str
+        """
+        Main prediction method to predict the most likely class.
+        :param stringSentence: Sentence to be predicted
+        :return: Predicted class label.
+        """
+        _processedString = self._process_sentence(stringSentence, self._vectoriser)
+        return self._model.predict(_processedString)
 
     def probabilities(self):
         raise NotImplementedError()
 
-    def predict_top(self, n):
-        raise NotImplementedError()
+    def predict_top(self, stringSentence, n=2):
+        # type: (str,int) -> list
+        """
+        This method returns the top 2 class labels that the model would predict along with the metric used for the prediction.
+        :param stringSentence: Sentence to be classified.
+        :param n: Number of class labels to be returned.
+        :return: Tuple of class label and prediction metric.
+        """
+
+        # Check top value is the correct index.
+        if n > len(self._classLabels):
+            raise IndexError("Number of expected results are above the available set of class labels.")
+
+        _probabilities = self._model.predict_proba(self._process_sentence(stringSentence, self._vectoriser))
+        return sorted(zip(self._classLabels,_probabilities[0]), reverse=True)[:n]
+

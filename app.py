@@ -3,8 +3,6 @@
 # Python Version 3.5.2
 
 
-import logging
-import sys
 import json
 from json import JSONDecodeError
 
@@ -29,29 +27,38 @@ if __name__ == '__main__':
         print("config.json file has been corrupted.")
 
     try:
-        # Ask the user to select a classifier.
-        user_selection = None
+        # Default the user selection to the linear model
+        user_selection = 1
         while user_selection is None:
             print("Select a classifier to be used for sentence classification.")
             print("1 Linear model")
             print("2 Edit distance")
             user_input = input()
             if user_input == '1' or user_input == '2':
-                user_selection = user_input
+                user_selection = int(user_input)
             else:
                 print("Invalid selection.")
     except:
         raise
 
     try:
-        # Initialise the prediction engine as per users selection.
-        if user_selection == '1':
+        # Initialise the classifier.
+        if user_selection == 1:
             classifier = LearnedModelClassifier(FileIOService.loadPickleObject(app_config.get('vectoriser'), "rb"),
                                                 FileIOService.loadPickleObject(app_config.get('linearmodel'), "rb"))
-        elif user_selection == '2':
+        elif user_selection == 2:
             classifier = HeuristicClassifier()
 
     except FileNotFoundError:
         print("Could not find model or vectoriser in the file system.")
-    except exceptions.InvalidModelException:
-        print("Incorrect model was loaded from the file system.")
+    except exceptions.InvalidModelException as e:
+        print("Problem loading models: " + e.message)
+
+    # main loop of the application
+
+    try:
+        while True:
+            input_sentence = input("Input a string to be classified: \n")
+            print(classifier.predict_top(input_sentence))
+    except:
+        raise
