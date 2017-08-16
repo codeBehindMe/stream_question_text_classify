@@ -9,6 +9,7 @@ from sklearn.linear_model import SGDClassifier
 from sklearn.neighbors import KNeighborsClassifier
 
 from sklearn.metrics import accuracy_score
+import pickle
 
 if __name__ == '__main__':
     # Read in the data
@@ -44,3 +45,10 @@ if __name__ == '__main__':
     _y_pred = _KNNModel.predict(fv_test)
 
     accuracy_score(y_test, y_pred)
+
+    pickle.dump(_cVectorizer, open("stringVectorizer.pobj", "wb"))
+
+    pickle.dump(_SGDModel, open("LinearModel.pobj", "wb"))
+
+    _loadVec = pickle.load(open("stringVectorizer.pobj", "rb"))
+    _loadModel = pickle.load(open("LinearModel.pobj", "rb"))
