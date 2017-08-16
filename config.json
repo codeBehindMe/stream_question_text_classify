@@ -1,4 +1,10 @@
 {
   "vectoriser": "stringVectorizer.pobj",
-  "linearmodel": "LinearModel.pobj"
+  "linearmodel": "LinearModel.pobj",
+  "classkeys": {
+    "TEA.2": "We hold ourselves and our team members accountable for results",
+    "ENA.3": "The information I need to do my job effectively is readily available",
+    "ALI.5": "I know what I need to do to be successful in my role",
+    "INN.2": "We are encouraged to be innovative even though some of our initiatives may not succeed"
+  }
 }

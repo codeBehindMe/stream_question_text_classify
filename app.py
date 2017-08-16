@@ -44,8 +44,10 @@ if __name__ == '__main__':
     try:
         # Initialise the classifier.
         if user_selection == 1:
-            classifier = LearnedModelClassifier(FileIOService.loadPickleObject(app_config.get('vectoriser'), "rb"),
-                                                FileIOService.loadPickleObject(app_config.get('linearmodel'), "rb"))
+            classifier = LearnedModelClassifier(
+                vectoriser=FileIOService.loadPickleObject(app_config.get('vectoriser'), "rb"),
+                model=FileIOService.loadPickleObject(app_config.get('linearmodel'), "rb"),
+                descriptor=app_config.get("classkeys"))
         elif user_selection == 2:
             classifier = HeuristicClassifier()
 

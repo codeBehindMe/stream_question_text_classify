@@ -17,9 +17,11 @@ warnings.filterwarnings("ignore")
 class LearnedModelClassifier(IClassifier):
     __MODELS = [SGDClassifier]  # Model type checks.
 
-    def __init__(self, vectoriser, model):
+    def __init__(self, vectoriser, model, descriptor=None):
+        # type: (CountVectorizer,object,dict) -> None
         self._vectoriser = vectoriser
         self._model = model
+        self._descriptor = descriptor
 
         self._load_vectoriser()
         self._load_predictiveModel()
@@ -103,11 +105,21 @@ class LearnedModelClassifier(IClassifier):
 
         return vectoriser.transform([_str])
 
+    @staticmethod
+    def _format_output(predictions, descriptors):
+        # type: (list,dict) -> list
+
+        output = []
+        for item in predictions:
+            output.append(' - '.join([descriptors.get(item[1]), str(item[0]).format('0.00f')]))
+
+        return output
+
     def get_supported_models(self):
         # type: () -> list
         """
         This is an attribute method which the supported model types.
-        :return:
+        :return: List of the supported model types.
         """
         return [model for model in self.__MODELS]
 
@@ -124,12 +136,13 @@ class LearnedModelClassifier(IClassifier):
     def probabilities(self):
         raise NotImplementedError()
 
-    def predict_top(self, stringSentence, n=2):
+    def predict_top(self, stringSentence, n=2, descriptive=True):
         # type: (str,int) -> list
         """
         This method returns the top 2 class labels that the model would predict along with the metric used for the prediction.
         :param stringSentence: Sentence to be classified.
         :param n: Number of class labels to be returned.
+        :param descriptive: If available show the descriptive class label.
         :return: Tuple of class label and prediction metric.
         """
 
@@ -138,5 +151,9 @@ class LearnedModelClassifier(IClassifier):
             raise IndexError("Number of expected results are above the available set of class labels.")
 
         _probabilities = self._model.predict_proba(self._process_sentence(stringSentence, self._vectoriser))
-        return sorted(zip(self._classLabels,_probabilities[0]), reverse=True)[:n]
 
+        if descriptive and self._descriptor is not None:
+            return self._format_output(sorted(zip(_probabilities[0], self._classLabels), reverse=True)[:n],
+                                       self._descriptor)
+
+        return sorted(zip(_probabilities[0], self._classLabels), reverse=True)[:n]
