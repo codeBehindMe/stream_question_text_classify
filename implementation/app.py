@@ -10,14 +10,13 @@ import sys
 import json
 from json import JSONDecodeError
 
-# Option parser
-op = OptionParser()
-
-op.add_option("--learned", dest="model_predict")
-op.add_option("--heuristic", dest="heuristic_predict")
+from engine import exceptions
+from engine import learned
 
 if __name__ == '__main__':
     print("starting app")
+
+    classifier = None  # Container for the classifier to be used.
 
     try:
         # Load configuration
@@ -28,3 +27,17 @@ if __name__ == '__main__':
         print("Could not find config.json file.")
     except JSONDecodeError:
         print("config.json file has been corrupted.")
+
+    try:
+        # Ask the user to select a classifier.
+
+        user_selection = None
+        while user_selection is None:
+            print("Select a classifier to be used for sentence classification.")
+            print("1 Linear model")
+            print("2 Edit distance")
+            user_input = input()
+
+
+    except:
+        raise

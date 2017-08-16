@@ -50,7 +50,7 @@ class LearnedModelClassifier:
                 type(self._model)))
 
     def get_supported_models(self):
-        # type: () -> list 
+        # type: () -> list
         """
         This is an attribute method which the supported model types.
         :return:
