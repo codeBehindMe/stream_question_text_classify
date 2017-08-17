@@ -3,7 +3,6 @@
 # Python Version 3.5.2
 
 # TODO: Implement unit tests
-# TODO: Write documentation
 
 import json
 from json import JSONDecodeError
