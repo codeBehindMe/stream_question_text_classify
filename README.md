@@ -39,7 +39,10 @@ The last block is the main loop of the program which does the UI handling. It ta
 #### engine ####
 The engine library delivers the actual heavy lifting of the application. In its declaration, it embeds two system level classes. 
 FileIOService: 
-This class handles the interface between the file system. Current implementation holds one public method.
+This class handles the interface between the file system. Current implementation contains one public method load_pickle_object(). 
+IClassifier:
+This is a interface implementation for the classifier class. This base class asserts 3 methods, predict, probabilities, and predict_top.
+
 
 ### Who do I talk to? ###
 
