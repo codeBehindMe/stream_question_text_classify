@@ -4,10 +4,11 @@ import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import SGDClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score
 
 import pickle
+import warnings
+
+warnings.filterwarnings("ignore")
 
 if __name__ == '__main__':
     # Read in the data
@@ -28,21 +29,5 @@ if __name__ == '__main__':
     # Logistic regression mode with default parameters
     _SGDModel = SGDClassifier(loss="log").fit(fv_train, y_train)
 
-    # Predict
-    y_pred = _SGDModel.predict(fv_test)
-
-    # check accuracy
-    print(accuracy_score(y_test, y_pred))
-    # Accuracy == 0.987654320988
-    # Something is not right. No way we can predict every single class label correctly.
-
-    # Try knn classifier
-    _KNNModel = KNeighborsClassifier(1).fit(fv_train, y_train)
-    _y_pred = _KNNModel.predict(fv_test)
-
     pickle.dump(_cVectorizer, open("cvectoriser.pobj", "wb"))
-
     pickle.dump(_SGDModel, open("linearmodel.pobj", "wb"))
-
-    _loadVec = pickle.load(open("cvectoriser.pobj", "rb"))
-    _loadModel = pickle.load(open("linearmodel.pobj", "rb"))

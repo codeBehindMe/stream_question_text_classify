@@ -1,12 +1,14 @@
 # This file is for exploring and wrangling the preprocessed data.
 import pandas as pd
+
 from nltk.tokenize import RegexpTokenizer
 from nltk.util import ngrams
 from nltk import FreqDist
-import matplotlib.pyplot as plt
 from nltk.tokenize import MWETokenizer
 from nltk.stem import LancasterStemmer
 
+import warnings
+warnings.filterwarnings("ignore")
 
 def getTokensFromString(string, regexPattern=r'\W+'):
     # type: (str,str) -> list
@@ -78,16 +80,7 @@ def stemWords(stringSentence, stemmer):
 
 if __name__ == '__main__':
     # read in the cleaned data.
-    _data = pd.read_csv("learning/PROCESSED_LABELED.csv")
-
-    # The balance of classes are important for a learning algorithm, so let's quickly visualise that.
-    _data.groupby(['code']).count().reset_index().plot(kind='bar', x='code')
-    # The classes are not completely biased, but some class labels are more prominent than others.
-    #     code  question_text
-    # 0  ALI.5             63
-    # 1  ENA.3             60
-    # 2  INN.2             74
-    # 3  TEA.2            100
+    _data = pd.read_csv("PROCESSED_LABELED.csv")
 
     # Before we head out let's cast everything to lower case.
     _data['question_text'] = _data['question_text'].str.lower()
@@ -102,15 +95,15 @@ if __name__ == '__main__':
     _flatBag = [word for word in _flatBag if not word.isdigit()]
 
     _unigrams = FreqDist(ngrams(_flatBag, n=1))
-    _unigrams.plot(30)
+    # _unigrams.plot(30)
 
     # Let's generate some bigrams
     _bigrams = FreqDist(ngrams(_flatBag, n=2))
-    _bigrams.plot(30)
+    # _bigrams.plot(30)
     # It's not so much a sharp drop, so maybe stopwords aren't really a problme?
     # Try trigrams
     _trigrams = FreqDist(ngrams(_flatBag, n=3))
-    _trigrams.plot(30)
+    # _trigrams.plot(30)
 
     # Generate tokenizer using bigrams and trigrams top say 10.
     _mweTokenizer = getMWETokenizer(_bigrams.most_common(10) + _trigrams.most_common(10))
@@ -121,9 +114,6 @@ if __name__ == '__main__':
 
     # Let's have a look at some duplicate entries in questions.
     r_duplicates = _data.drop_duplicates()
-    print(r_duplicates.shape[0], _data.shape[0])
-    # 288 297
-    # Looks like 9 instances were duplicates.
 
     # Remove the non alpha characters.
     r_duplicates['question_text'] = r_duplicates['question_text'].apply(lambda x: removeNonAlphabetic(x))
@@ -132,6 +122,5 @@ if __name__ == '__main__':
     r_duplicates['question_text'] = r_duplicates['question_text'].apply(lambda x: stemWords(x, _stemmer))
 
     r_duplicates = r_duplicates.drop_duplicates()
-    print(r_duplicates.shape[0], _data.shape[0])
 
-    r_duplicates.to_csv("../learning/CLEANED_LABELED.csv", index=False, encoding='utf-8')
+    r_duplicates.to_csv("CLEANED_LABELED.csv", index=False, encoding='utf-8')
