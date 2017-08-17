@@ -43,6 +43,12 @@ This class handles the interface between the file system. Current implementation
 IClassifier:
 This is a interface implementation for the classifier class. This base class asserts 3 methods, predict, probabilities, and predict_top.
 
+##### exceptions.py #####
+This module contains custom exceptions, currently only containing InvalidModelException. Provides a container for centralising non-local control flow classes.
+
+#### learned.py ####
+This module contains the models that have been machine learned. Currently only implementations are for classifiers. This class handles prediction duties that are recieved from the applications UI layer. 
+
 
 ### Who do I talk to? ###
 
