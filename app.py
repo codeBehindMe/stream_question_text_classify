@@ -2,7 +2,6 @@
 # Date : 16/08/2017
 # Python Version 3.5.2
 
-# TODO: Implement unit tests
 
 import json
 from json import JSONDecodeError
