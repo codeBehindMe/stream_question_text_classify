@@ -48,8 +48,8 @@ if __name__ == '__main__':
         # Initialise the classifier.
         if user_selection == 1:
             classifier = LearnedModelClassifier(
-                vectoriser=FileIOService.loadPickleObject(app_config.get('vectoriser'), "rb"),
-                model=FileIOService.loadPickleObject(app_config.get('linearmodel'), "rb"),
+                vectoriser=FileIOService.load_pickle_obj(app_config.get('vectoriser'), "rb"),
+                model=FileIOService.load_pickle_obj(app_config.get('linearmodel'), "rb"),
                 descriptor=app_config.get("classkeys"))
     except FileNotFoundError:
         print("Could not find model or vectoriser in the file system.")

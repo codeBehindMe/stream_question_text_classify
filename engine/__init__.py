@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 
 class FileIOService:
     @staticmethod
-    def loadPickleObject(path, mode_):
+    def load_pickle_obj(path, mode_):
         return pickle.load(open(path, mode=mode_))
 
 
