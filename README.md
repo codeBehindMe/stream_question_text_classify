@@ -36,7 +36,10 @@ In the first block contains the wind up sequence, which essentially loads the co
 The second and third blocks are implemented for exensibility, such as integrating a different model. These blocks are currently only executes three lines which is hidden from the user.
 The last block is the main loop of the program which does the UI handling. It takes the string input and passes it to the application engine which does the actual prediction.
 
-
+#### engine ####
+The engine library delivers the actual heavy lifting of the application. In its declaration, it embeds two system level classes. 
+FileIOService: 
+This class handles the interface between the file system. Current implementation holds one public method.
 
 ### Who do I talk to? ###
 
