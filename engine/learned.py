@@ -1,5 +1,9 @@
-# This module contains functionality serviceable by the machine learned classifier.
-
+################################################################
+# Author : Aaron Tillekeratne                                  #
+# Date : 17/08/2017                                            #
+# Description : This module contains functionality             #
+#               serviceable by the machine learned classifier. #
+################################################################
 from .exceptions import InvalidModelException
 from engine import IClassifier
 import warnings
@@ -14,10 +18,30 @@ warnings.filterwarnings("ignore")
 
 
 class LearnedModelClassifier(IClassifier):
+    """
+    LearnedModelClassifier Class
+    ============================
+    This class is a API class for implementing models that have been developed using machine learning models. It implements classifier interface to ensure at minimum it is able to provide functionality expected by any classifier.
+
+    In addition to normal classification functionality, this class provides support for vectorisers. String cleaning is also inbuilt into this class on a soft private access level.
+
+    See docstrings of individual methods for descriptions.
+
+    """
     __MODELS = [SGDClassifier]  # Model type checks.
 
     def __init__(self, vectoriser, model, descriptor=None):
         # type: (CountVectorizer,object,dict) -> None
+        """
+        LearnedModelClassifier Constructor
+        ----------------------------------
+        Generates API for models that have been developed by machine learning for text classification.
+        Currently supports onl SGDClassifier from the sklearn package.
+        :param vectoriser: Vectoriser to vectorise the incoming string.
+        :param model: Model to be used in the prediction.
+        :param descriptor: Dictionary containing the class label keys and descriptive class labels which can be shown in place of the keys.
+        """
+
         self._vectoriser = vectoriser
         self._model = model
         self._descriptor = descriptor
@@ -107,6 +131,12 @@ class LearnedModelClassifier(IClassifier):
     @staticmethod
     def _format_output(predictions, descriptors):
         # type: (list,dict) -> list
+        """
+        Formats the output class according the descripters that have been provided
+        :param predictions: Predicted class label.
+        :param descriptors: Dictionary containing the class label as the key and a corresponding description.
+        :return: list of descriptive labels.
+        """
 
         output = []
         for item in predictions:

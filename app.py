@@ -4,7 +4,6 @@
 
 # TODO: Implement unit tests
 # TODO: Write documentation
-# TODO: Complete docstrings
 
 import json
 from json import JSONDecodeError
