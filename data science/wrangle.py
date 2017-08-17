@@ -134,4 +134,4 @@ if __name__ == '__main__':
     r_duplicates = r_duplicates.drop_duplicates()
     print(r_duplicates.shape[0], _data.shape[0])
 
-    r_duplicates.to_csv("../learning/CLEANED_LABELED.csv",index=False,encoding='utf-8')
+    r_duplicates.to_csv("../learning/CLEANED_LABELED.csv", index=False, encoding='utf-8')

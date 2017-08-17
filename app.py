@@ -2,6 +2,11 @@
 # Date : 16/08/2017
 # Python Version 3.5.2
 
+# TODO: Write ipython notebooks for data science
+# TODO: Implement unit tests
+# TODO: Remove Heuristics module.
+# TODO: Write documentation
+# TODO: Complete docstrings
 
 import json
 from json import JSONDecodeError

@@ -1,6 +1,6 @@
 {
-  "vectoriser": "stringVectorizer.pobj",
-  "linearmodel": "LinearModel.pobj",
+  "vectoriser": "cvectoriser.pobj",
+  "linearmodel": "linearmodel.pobj",
   "classkeys": {
     "TEA.2": "We hold ourselves and our team members accountable for results",
     "ENA.3": "The information I need to do my job effectively is readily available",

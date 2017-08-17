@@ -1,5 +1,4 @@
 # This module contains functionality serviceable by the machine learned classifier.
-import pickle
 
 from .exceptions import InvalidModelException
 from engine import IClassifier
