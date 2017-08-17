@@ -3,7 +3,6 @@
 # Python Version 3.5.2
 
 # TODO: Implement unit tests
-# TODO: Remove Heuristics module.
 # TODO: Write documentation
 # TODO: Complete docstrings
 
@@ -12,7 +11,6 @@ from json import JSONDecodeError
 
 from engine import exceptions
 from engine.learned import LearnedModelClassifier
-from engine.heuristic import HeuristicClassifier
 from engine import FileIOService
 
 if __name__ == '__main__':
@@ -31,6 +29,7 @@ if __name__ == '__main__':
         print("config.json file has been corrupted.")
 
     try:
+        # This block is embedded for extensibility.
         # Default the user selection to the linear model
         user_selection = 1
         while user_selection is None:
@@ -46,15 +45,13 @@ if __name__ == '__main__':
         raise
 
     try:
+        # This block is added for extensibility
         # Initialise the classifier.
         if user_selection == 1:
             classifier = LearnedModelClassifier(
                 vectoriser=FileIOService.loadPickleObject(app_config.get('vectoriser'), "rb"),
                 model=FileIOService.loadPickleObject(app_config.get('linearmodel'), "rb"),
                 descriptor=app_config.get("classkeys"))
-        elif user_selection == 2:
-            classifier = HeuristicClassifier()
-
     except FileNotFoundError:
         print("Could not find model or vectoriser in the file system.")
     except exceptions.InvalidModelException as e:
