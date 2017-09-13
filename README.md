@@ -2,7 +2,7 @@
 
 ### What's this repository for? ###
 
-This repository contains the problem and solution to the CAmper initiation challenge. 
+This repository contains an application for streaming text classification to 4 predetermined classes. 
 
 ### What's inside? ###
 
